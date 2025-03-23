@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Moteur de Recherche Élégant</title>
   <style>
-    /* Les styles restent inchangés */
+    /* Styles généraux inchangés */
     * {
       box-sizing: border-box;
     }
@@ -138,9 +138,39 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    #video-container {
-      margin-top: 20px;
+    /* Style pour la pop-up vidéo */
+    .video-popup {
       display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      animation: slideIn 0.5s ease;
+    }
+
+    .dark-mode .video-popup {
+      background: rgba(30, 30, 30, 0.95);
+    }
+
+    .video-popup iframe {
+      border: none;
+    }
+
+    /* Overlay pour assombrir l'arrière-plan */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
     }
 
     .auth-container {
@@ -222,7 +252,7 @@
 
   <div class="search-container">
     <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
-    <button onclick="playVideoAndRedirect()">🔍</button>
+    <button onclick="showVideoPopup()">🔍</button>
     <ul id="suggestions"></ul>
   </div>
 
@@ -231,8 +261,12 @@
     <button onclick="clearHistory()">Supprimer Historique 🗑️</button>
   </div>
 
-  <div id="video-container">
-    <iframe id="youtube-video" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+  <!-- Overlay pour la pop-up -->
+  <div class="overlay" id="video-overlay" onclick="closeVideoPopup()"></div>
+
+  <!-- Pop-up pour la vidéo YouTube -->
+  <div class="video-popup" id="video-popup">
+    <iframe id="youtube-video" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
@@ -317,30 +351,48 @@
       document.getElementById('logout-btn').style.display = 'none';
     }
 
-    function playVideoAndRedirect() {
-      // Afficher la vidéo YouTube spécifique
-      const videoContainer = document.getElementById('video-container');
+    function showVideoPopup() {
+      const overlay = document.getElementById('video-overlay');
+      const popup = document.getElementById('video-popup');
       const youtubeVideo = document.getElementById('youtube-video');
+
+      // Afficher l'overlay et la pop-up
+      overlay.style.display = 'block';
+      popup.style.display = 'block';
+
+      // Charger la vidéo avec autoplay
       youtubeVideo.src = "https://www.youtube.com/embed/u_PNoP3K-c4?autoplay=1";
-      videoContainer.style.display = 'block';
 
-      // Effectuer la redirection après la lecture de la vidéo (ou après un délai)
+      // Redirection après un délai (optionnel)
       setTimeout(() => {
-        videoContainer.style.display = 'none';
-        youtubeVideo.src = ''; // Réinitialiser la source pour arrêter la vidéo
+        closeVideoPopup();
+        redirectUser();
+      }, 3000); // 3000ms = 3 secondes, ajustez selon vos besoins
+    }
 
-        let query = document.getElementById('search').value.trim().toLowerCase();
-        const redirections = {
-          "youtube": "https://www.youtube.com",
-          "google": "https://www.google.com",
-          "chatgpt": "https://chat.openai.com",
-          "github": "https://github.com",
-          "wikipedia": "https://www.wikipedia.org"
-        };
+    function closeVideoPopup() {
+      const overlay = document.getElementById('video-overlay');
+      const popup = document.getElementById('video-popup');
+      const youtubeVideo = document.getElementById('youtube-video');
 
-        let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        window.location.href = url;
-      }, 3000); // 3000ms = 3 secondes (ajustez selon vos besoins)
+      // Cacher l'overlay et la pop-up
+      overlay.style.display = 'none';
+      popup.style.display = 'none';
+      youtubeVideo.src = ''; // Réinitialiser la source pour arrêter la vidéo
+    }
+
+    function redirectUser() {
+      let query = document.getElementById('search').value.trim().toLowerCase();
+      const redirections = {
+        "youtube": "https://www.youtube.com",
+        "google": "https://www.google.com",
+        "chatgpt": "https://chat.openai.com",
+        "github": "https://github.com",
+        "wikipedia": "https://www.wikipedia.org"
+      };
+
+      let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      window.location.href = url;
     }
 
     function clearHistory() {
