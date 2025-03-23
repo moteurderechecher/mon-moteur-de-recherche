@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Moteur de Recherche Élégant</title>
   <style>
-    /* Styles généraux */
+    /* Styles généraux inchangés */
     * {
       box-sizing: border-box;
     }
@@ -37,7 +37,7 @@
       animation: fadeIn 1s ease-in;
     }
 
-    /* Section compte */
+    /* Section compte inchangée */
     .account-section {
       position: absolute;
       top: 20px;
@@ -65,7 +65,7 @@
       transform: scale(1.05);
     }
 
-    /* Conteneur de recherche */
+    /* Conteneur de recherche inchangé */
     .search-container {
       position: relative;
       width: 100%;
@@ -114,7 +114,7 @@
       transform: translateY(-50%) scale(1.1);
     }
 
-    /* Boutons */
+    /* Boutons inchangés */
     .buttons {
       display: flex;
       gap: 15px;
@@ -141,7 +141,13 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Formulaire d'authentification */
+    /* Style pour le conteneur de la vidéo */
+    #video-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    /* Formulaire d'authentification inchangé */
     .auth-container {
       display: none;
       position: fixed;
@@ -191,7 +197,7 @@
       color: #fff;
     }
 
-    /* Footer */
+    /* Footer inchangé */
     footer {
       margin-top: 40px;
       font-size: 0.9rem;
@@ -199,7 +205,7 @@
       text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     }
 
-    /* Animations */
+    /* Animations inchangées */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -230,6 +236,11 @@
   <div class="buttons">
     <button onclick="toggleDarkMode()">Mode Sombre 🌙</button>
     <button onclick="clearHistory()">Supprimer Historique 🗑️</button>
+  </div>
+
+  <!-- Conteneur pour la vidéo YouTube -->
+  <div id="video-container">
+    <iframe id="youtube-video" width="560" height="315" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
@@ -315,17 +326,29 @@
     }
 
     function redirectUser() {
-      let query = document.getElementById('search').value.trim().toLowerCase();
-      const redirections = {
-        "youtube": "https://www.youtube.com",
-        "google": "https://www.google.com",
-        "chatgpt": "https://chat.openai.com",
-        "github": "https://github.com",
-        "wikipedia": "https://www.wikipedia.org"
-      };
+      // Afficher la vidéo YouTube de 1 seconde
+      const videoContainer = document.getElementById('video-container');
+      const youtubeVideo = document.getElementById('youtube-video');
+      youtubeVideo.src = "https://www.youtube.com/embed/VIDEO_ID?autoplay=1&start=0&end=1"; // Remplacez VIDEO_ID par l'ID d'une vidéo YouTube
+      videoContainer.style.display = 'block';
 
-      let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      window.location.href = url;
+      // Cacher la vidéo après 1 seconde et effectuer la redirection
+      setTimeout(() => {
+        videoContainer.style.display = 'none';
+        youtubeVideo.src = ''; // Réinitialiser la source pour arrêter la vidéo
+
+        let query = document.getElementById('search').value.trim().toLowerCase();
+        const redirections = {
+          "youtube": "https://www.youtube.com",
+          "google": "https://www.google.com",
+          "chatgpt": "https://chat.openai.com",
+          "github": "https://github.com",
+          "wikipedia": "https://www.wikipedia.org"
+        };
+
+        let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.location.href = url;
+      }, 1000); // 1000ms = 1 seconde
     }
 
     function clearHistory() {
