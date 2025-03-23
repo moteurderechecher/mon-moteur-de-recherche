@@ -138,41 +138,6 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Style pour la pop-up vidéo */
-    .video-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      animation: slideIn 0.5s ease;
-    }
-
-    .dark-mode .video-popup {
-      background: rgba(30, 30, 30, 0.95);
-    }
-
-    .video-popup iframe {
-      border: none;
-    }
-
-    /* Overlay pour assombrir l'arrière-plan */
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-
     .auth-container {
       display: none;
       position: fixed;
@@ -252,21 +217,13 @@
 
   <div class="search-container">
     <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
-    <button onclick="showVideoPopup()">🔍</button>
+    <button onclick="openVideoPopup()">🔍</button>
     <ul id="suggestions"></ul>
   </div>
 
   <div class="buttons">
     <button onclick="toggleDarkMode()">Mode Sombre 🌙</button>
     <button onclick="clearHistory()">Supprimer Historique 🗑️</button>
-  </div>
-
-  <!-- Overlay pour la pop-up -->
-  <div class="overlay" id="video-overlay" onclick="closeVideoPopup()"></div>
-
-  <!-- Pop-up pour la vidéo YouTube -->
-  <div class="video-popup" id="video-popup">
-    <iframe id="youtube-video" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
@@ -351,34 +308,43 @@
       document.getElementById('logout-btn').style.display = 'none';
     }
 
-    function showVideoPopup() {
-      const overlay = document.getElementById('video-overlay');
-      const popup = document.getElementById('video-popup');
-      const youtubeVideo = document.getElementById('youtube-video');
-
-      // Afficher l'overlay et la pop-up
-      overlay.style.display = 'block';
-      popup.style.display = 'block';
-
-      // Charger la vidéo avec autoplay
-      youtubeVideo.src = "https://www.youtube.com/embed/u_PNoP3K-c4?autoplay=1";
+    function openVideoPopup() {
+      // Ouvre une nouvelle fenêtre pop-up avec la vidéo YouTube Shorts en autoplay
+      const videoUrl = "https://www.youtube.com/embed/uI9oPvcsD0o?autoplay=1";
+      const popup = window.open("", "VideoPopup", "width=600,height=400,scrollbars=no,resizable=no");
+      
+      // Écrire le HTML dans la fenêtre pop-up
+      popup.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Vidéo</title>
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              background: ${document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#fff'};
+            }
+            iframe {
+              border: none;
+            }
+          </style>
+        </head>
+        <body>
+          <iframe width="560" height="315" src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
+        </body>
+        </html>
+      `);
 
       // Redirection après un délai (optionnel)
       setTimeout(() => {
-        closeVideoPopup();
+        popup.close(); // Ferme la pop-up
         redirectUser();
-      }, 3000); // 3000ms = 3 secondes, ajustez selon vos besoins
-    }
-
-    function closeVideoPopup() {
-      const overlay = document.getElementById('video-overlay');
-      const popup = document.getElementById('video-popup');
-      const youtubeVideo = document.getElementById('youtube-video');
-
-      // Cacher l'overlay et la pop-up
-      overlay.style.display = 'none';
-      popup.style.display = 'none';
-      youtubeVideo.src = ''; // Réinitialiser la source pour arrêter la vidéo
+      }, 3000); // 3 secondes (ajustez selon vos besoins)
     }
 
     function redirectUser() {
