@@ -1,7 +1,215 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- Le head reste inchangé -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moteur de Recherche Élégant</title>
+  <style>
+    /* Les styles restent inchangés */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6b48ff, #00ddeb);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      transition: all 0.5s ease;
+      overflow-x: hidden;
+    }
+
+    .dark-mode {
+      background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
+      color: #e0e0e0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .account-section {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      color: #fff;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .account-section button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .account-section button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .search-container input:focus {
+      outline: none;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      background: #fff;
+    }
+
+    .dark-mode .search-container input {
+      background: rgba(50, 50, 50, 0.9);
+      color: #fff;
+    }
+
+    .search-container button {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #6b48ff;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-container button:hover {
+      background: #00ddeb;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .buttons button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .dark-mode .buttons button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    #video-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .auth-container {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.5s ease;
+    }
+
+    .dark-mode .auth-container {
+      background: rgba(30, 30, 30, 0.95);
+      color: #fff;
+    }
+
+    .auth-container h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .dark-mode .auth-container h2 {
+      color: #fff;
+    }
+
+    .auth-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #f0f0f0;
+      transition: all 0.3s ease;
+    }
+
+    .auth-container input:focus {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      outline: none;
+    }
+
+    .dark-mode .auth-container input {
+      background: #333;
+      color: #fff;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translate(-50%, -60%); opacity: 0; }
+      to { transform: translate(-50%, -50%); opacity: 1; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="account-section">
@@ -14,14 +222,13 @@
 
   <div class="search-container">
     <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
-    <button onclick="redirectUser()">🔍</button>
+    <button onclick="playVideoAndRedirect()">🔍</button>
     <ul id="suggestions"></ul>
   </div>
 
   <div class="buttons">
     <button onclick="toggleDarkMode()">Mode Sombre 🌙</button>
     <button onclick="clearHistory()">Supprimer Historique 🗑️</button>
-    <button onclick="playVideo()">Jouer Vidéo ▶️</button> <!-- Nouveau bouton ajouté -->
   </div>
 
   <div id="video-container">
@@ -31,32 +238,109 @@
   <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
 
   <div class="auth-container" id="auth-form">
-    <!-- Le formulaire d'authentification reste inchangé -->
+    <h2>Connexion / Inscription</h2>
+    <input type="text" id="username" placeholder="Nom d'utilisateur">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <div class="buttons">
+      <button onclick="login()">Se connecter</button>
+      <button onclick="register()">S'inscrire</button>
+      <button onclick="toggleAuthForm()">Fermer</button>
+    </div>
   </div>
 
   <script>
-    // Les fonctions existantes restent inchangées jusqu'à redirectUser
-
-    function playVideo() {
-      const videoContainer = document.getElementById('video-container');
-      const youtubeVideo = document.getElementById('youtube-video');
-      // Utilisation de l'ID de la vidéo (u_PNoP3K-c4) extraite de l'URL
-      youtubeVideo.src = "https://www.youtube.com/embed/u_PNoP3K-c4?autoplay=1";
-      videoContainer.style.display = 'block';
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
 
-    function redirectUser() {
-      let query = document.getElementById('search').value.trim().toLowerCase();
-      const redirections = {
-        "youtube": "https://www.youtube.com",
-        "google": "https://www.google.com",
-        "chatgpt": "https://chat.openai.com",
-        "github": "https://github.com",
-        "wikipedia": "https://www.wikipedia.org"
-      };
+    window.onload = function() {
+      if (JSON.parse(localStorage.getItem('darkMode'))) {
+        document.body.classList.add('dark-mode');
+      }
+      checkLoginStatus();
+    };
 
-      let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      window.location.href = url;
+    function checkLoginStatus() {
+      let user = localStorage.getItem('currentUser');
+      if (user) {
+        document.getElementById('user-info').textContent = user;
+        document.getElementById('logout-btn').style.display = 'inline-block';
+      }
+    }
+
+    function toggleAuthForm() {
+      const form = document.getElementById('auth-form');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function register() {
+      let username = document.getElementById('username').value.trim();
+      let password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        alert("Remplissez tous les champs !");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+      if (users[username]) {
+        alert("Nom d'utilisateur déjà pris !");
+        return;
+      }
+
+      users[username] = password;
+      localStorage.setItem('users', JSON.stringify(users));
+      alert("Compte créé avec succès !");
+      toggleAuthForm();
+    }
+
+    function login() {
+      let username = document.getElementById('username').value.trim();
+      let password = document.getElementById('password').value.trim();
+
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+
+      if (users[username] === password) {
+        localStorage.setItem('currentUser', username);
+        document.getElementById('user-info').textContent = username;
+        document.getElementById('logout-btn').style.display = 'inline-block';
+        toggleAuthForm();
+      } else {
+        alert("Nom d'utilisateur ou mot de passe incorrect !");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('user-info').textContent = "Invité";
+      document.getElementById('logout-btn').style.display = 'none';
+    }
+
+    function playVideoAndRedirect() {
+      // Afficher la vidéo YouTube spécifique
+      const videoContainer = document.getElementById('video-container');
+      const youtubeVideo = document.getElementById('youtube-video');
+      youtubeVideo.src = "https://www.youtube.com/embed/u_PNoP3K-c4?autoplay=1";
+      videoContainer.style.display = 'block';
+
+      // Effectuer la redirection après la lecture de la vidéo (ou après un délai)
+      setTimeout(() => {
+        videoContainer.style.display = 'none';
+        youtubeVideo.src = ''; // Réinitialiser la source pour arrêter la vidéo
+
+        let query = document.getElementById('search').value.trim().toLowerCase();
+        const redirections = {
+          "youtube": "https://www.youtube.com",
+          "google": "https://www.google.com",
+          "chatgpt": "https://chat.openai.com",
+          "github": "https://github.com",
+          "wikipedia": "https://www.wikipedia.org"
+        };
+
+        let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.location.href = url;
+      }, 3000); // 3000ms = 3 secondes (ajustez selon vos besoins)
     }
 
     function clearHistory() {
