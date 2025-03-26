@@ -1,238 +1,51 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moteur de Recherche Élégant</title>
-  <style>
-    /* Styles existants inchangés */
-    * {
-      box-sizing: border-box;
-    }
+/* Ajout dans la section style existante */
+.main-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 20px;
+}
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #6b48ff, #00ddeb);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: row; /* Changé pour aligner le contenu et la vidéo */
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      transition: all 0.5s ease;
-      overflow-x: hidden;
-    }
+.search-container {
+  flex: 1;
+  margin: 20px 0;
+}
 
-    .dark-mode {
-      background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
-      color: #e0e0e0;
-    }
+.video-container {
+  margin-top: 20px;
+}
 
-    /* Styles existants pour les autres éléments inchangés */
-    h1 {
-      font-size: 2.5rem;
-      color: #fff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease-in;
-    }
+.video-container iframe {
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
 
-    /* ... (autres styles existants inchangés) ... */
+.video-container iframe:hover {
+  transform: scale(1.02);
+}
 
-    /* Nouveau style pour le conteneur de la vidéo */
-    .video-container {
-      position: fixed;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 300px; /* Ajustez la largeur selon vos besoins */
-      height: 200px; /* Ajustez la hauteur selon vos besoins */
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      overflow: hidden;
-      z-index: 1000; /* Assure que la vidéo reste au-dessus des autres éléments */
-    }
+.dark-mode .video-container iframe {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
 
-    .video-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+/* Ajustement du body pour accueillir le nouveau layout */
+body {
+  /* ... styles existants ... */
+  justify-content: flex-start;
+  padding-top: 60px;
+}
 
-    .dark-mode .video-container {
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    /* ... (autres styles existants inchangés) ... */
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="account-section">
-    <span id="user-info">Invité</span>
-    <button onclick="toggleAuthForm()">Connexion</button>
-    <button id="logout-btn" onclick="logout()" style="display:none;">Déconnexion</button>
-  </div>
-
-  <h1>Moteur de Recherche Élégant</h1>
-
-  <div class="search-container">
-    <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
-    <button onclick="openVideoPopup()">🔍</button>
-    <ul id="suggestions"></ul>
-  </div>
-
-  <div class="buttons">
-    <button onclick="toggleDarkMode()">Mode Sombre 🌙</button>
-    <button onclick="clearHistory()">Supprimer Historique 🗑️</button>
-  </div>
-
-  <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
-
-  <!-- Nouveau conteneur pour la vidéo -->
-  <div class="video-container">
-    <iframe src="https://www.youtube.com/embed/uI9oPvcsD0o?autoplay=1&mute=1" allowfullscreen></iframe>
-  </div>
-
-  <div class="auth-container" id="auth-form">
-    <h2>Connexion / Inscription</h2>
-    <input type="text" id="username" placeholder="Nom d'utilisateur">
-    <input type="password" id="password" placeholder="Mot de passe">
-    <div class="buttons">
-      <button onclick="login()">Se connecter</button>
-      <button onclick="register()">S'inscrire</button>
-      <button onclick="toggleAuthForm()">Fermer</button>
-    </div>
-  </div>
-
-  <script>
-    /* Script existant inchangé */
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
-
-    window.onload = function() {
-      if (JSON.parse(localStorage.getItem('darkMode'))) {
-        document.body.classList.add('dark-mode');
-      }
-      checkLoginStatus();
-    };
-
-    function checkLoginStatus() {
-      let user = localStorage.getItem('currentUser');
-      if (user) {
-        document.getElementById('user-info').textContent = user;
-        document.getElementById('logout-btn').style.display = 'inline-block';
-      }
-    }
-
-    function toggleAuthForm() {
-      const form = document.getElementById('auth-form');
-      form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function register() {
-      let username = document.getElementById('username').value.trim();
-      let password = document.getElementById('password').value.trim();
-
-      if (!username || !password) {
-        alert("Remplissez tous les champs !");
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-      if (users[username]) {
-        alert("Nom d'utilisateur déjà pris !");
-        return;
-      }
-
-      users[username] = password;
-      localStorage.setItem('users', JSON.stringify(users));
-      alert("Compte créé avec succès !");
-      toggleAuthForm();
-    }
-
-    function login() {
-      let username = document.getElementById('username').value.trim();
-      let password = document.getElementById('password').value.trim();
-
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-
-      if (users[username] === password) {
-        localStorage.setItem('currentUser', username);
-        document.getElementById('user-info').textContent = username;
-        document.getElementById('logout-btn').style.display = 'inline-block';
-        toggleAuthForm();
-      } else {
-        alert("Nom d'utilisateur ou mot de passe incorrect !");
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('currentUser');
-      document.getElementById('user-info').textContent = "Invité";
-      document.getElementById('logout-btn').style.display = 'none';
-    }
-
-    function openVideoPopup() {
-      const videoUrl = "https://www.youtube.com/embed/uI9oPvcsD0o?autoplay=1";
-      const popup = window.open("", "VideoPopup", "width=600,height=400,scrollbars=no,resizable=no");
-      
-      popup.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Vidéo</title>
-          <style>
-            body {
-              margin: 0;
-              padding: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-              background: ${document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#fff'};
-            }
-            iframe {
-              border: none;
-            }
-          </style>
-        </head>
-        <body>
-          <iframe width="560" height="315" src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
-        </body>
-        </html>
-      `);
-
-      setTimeout(() => {
-        popup.close();
-        redirectUser();
-      }, 3000);
-    }
-
-    function redirectUser() {
-      let query = document.getElementById('search').value.trim().toLowerCase();
-      const redirections = {
-        "youtube": "https://www.youtube.com",
-        "google": "https://www.google.com",
-        "chatgpt": "https://chat.openai.com",
-        "github": "https://github.com",
-        "wikipedia": "https://www.wikipedia.org"
-      };
-
-      let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      window.location.href = url;
-    }
-
-    function clearHistory() {
-      localStorage.removeItem('users');
-      localStorage.removeItem('currentUser');
-      alert("Historique et comptes supprimés !");
-      document.getElementById('user-info').textContent = "Invité";
-      document.getElementById('logout-btn').style.display = 'none';
-    }
-  </script>
-</body>
-</html>
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .video-container iframe {
+    width: 100%;
+    max-width: 300px;
+  }
+}
