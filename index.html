@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Moteur de Recherche avec Comptes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* Styles généraux */
+    /* Styles généraux inchangés */
     html, body {
-      height: 100%; /* Assure que html et body prennent toute la hauteur */
-      width: 100%; /* Assure que html et body prennent toute la largeur */
+      height: 100%;
+      width: 100%;
       margin: 0;
       padding: 0;
     }
@@ -34,12 +35,13 @@
       color: #fff;
     }
 
-    /* Section du compte */
     .account-section {
       position: absolute;
       top: 10px;
       right: 20px;
       color: white;
+      display: flex;
+      align-items: center;
     }
 
     .account-section button {
@@ -55,7 +57,7 @@
       background: #444;
     }
 
-    .auth-container {
+    .auth-container, .reset-container {
       display: none;
       position: fixed;
       top: 50%;
@@ -67,7 +69,7 @@
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .dark-mode .auth-container {
+    .dark-mode .auth-container, .dark-mode .reset-container {
       background: #222;
       color: white;
     }
@@ -110,19 +112,113 @@
       color: #ddd;
     }
 
-    /* Conteneur principal pour le contenu central */
     .main-content {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%; /* Prend toute la largeur */
-      height: 100%; /* Prend toute la hauteur */
+      width: 100%;
+      height: 100%;
     }
 
     .search-container {
-      width: 80%; /* Limite la largeur de la barre de recherche pour une meilleure lisibilité */
-      max-width: 600px; /* Largeur maximale pour éviter qu'elle devienne trop large */
+      width: 80%;
+      max-width: 600px;
+    }
+
+    /* Style pour les points et le menu */
+    .app-menu-right {
+      cursor: pointer;
+      margin-right: 10px;
+      position: relative;
+    }
+
+    .app-menu-right .dots {
+      display: grid;
+      grid-template-columns: repeat(3, 6px);
+      grid-gap: 4px;
+    }
+
+    .app-menu-right .dot {
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+
+    .app-menu-right:hover .dot {
+      transform: scale(1.2);
+    }
+
+    .app-menu-right .dropdown {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      width: 200px;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .app-menu-right .dropdown.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dark-mode .app-menu-right .dropdown {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .app-menu-right .dropdown a {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      color: #333;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 5px 0;
+      transition: background 0.2s ease;
+    }
+
+    .dark-mode .app-menu-right .dropdown a {
+      color: #ddd;
+    }
+
+    .app-menu-right .dropdown a:hover {
+      background: #f5f5f5;
+    }
+
+    .dark-mode .app-menu-right .dropdown a:hover {
+      background: #444;
+    }
+
+    .app-menu-right .dropdown a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Style pour le lien "Mot de passe oublié ?" */
+    .forgot-password {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      color: #007bff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .dark-mode .forgot-password {
+      color: #66b0ff;
     }
   </style>
 </head>
@@ -130,6 +226,25 @@
   <!-- Contenu principal centré -->
   <div class="main-content">
     <div class="account-section">
+      <div class="app-menu-right" id="appMenu">
+        <div class="dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <div class="dropdown" id="appDropdown">
+          <a href="https://www.google.com"><i class="fas fa-search"></i> Google</a>
+          <a href="https://www.youtube.com"><i class="fab fa-youtube"></i> YouTube</a>
+          <a href="https://www.github.com"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
       <span id="user-info">Invité</span>
       <button onclick="toggleAuthForm()">Connexion</button>
       <button id="logout-btn" onclick="logout()" style="display:none;">Déconnexion</button>
@@ -159,9 +274,32 @@
     <button onclick="login()">Se connecter</button>
     <button onclick="register()">S'inscrire</button>
     <button onclick="toggleAuthForm()">Fermer</button>
+    <a href="#" class="forgot-password" onclick="toggleResetForm()">Mot de passe oublié ?</a>
+  </div>
+
+  <!-- Formulaire de réinitialisation de mot de passe -->
+  <div class="reset-container" id="reset-form">
+    <h2>Réinitialiser le mot de passe</h2>
+    <input type="text" id="reset-username" placeholder="Nom d'utilisateur">
+    <button onclick="resetPassword()">Réinitialiser</button>
+    <button onclick="toggleResetForm()">Fermer</button>
   </div>
 
   <script>
+    // Gestion du menu déroulant
+    const appMenu = document.getElementById('appMenu');
+    const appDropdown = document.getElementById('appDropdown');
+
+    appMenu.addEventListener('click', function() {
+      appDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function(event) {
+      if (!appMenu.contains(event.target)) {
+        appDropdown.classList.remove('show');
+      }
+    });
+
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
@@ -173,7 +311,6 @@
       }
       checkLoginStatus();
 
-      // Ajout de l'événement pour la touche Entrée
       document.getElementById('search').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
           redirectUser();
@@ -192,6 +329,15 @@
     function toggleAuthForm() {
       const form = document.getElementById('auth-form');
       form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleResetForm() {
+      const resetForm = document.getElementById('reset-form');
+      const authForm = document.getElementById('auth-form');
+      resetForm.style.display = resetForm.style.display === 'block' ? 'none' : 'block';
+      if (resetForm.style.display === 'block') {
+        authForm.style.display = 'none'; // Ferme le formulaire de connexion si réinitialisation ouverte
+      }
     }
 
     function register() {
@@ -237,6 +383,29 @@
       document.getElementById('logout-btn').style.display = 'none';
     }
 
+    function resetPassword() {
+      let username = document.getElementById('reset-username').value.trim();
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+
+      if (!username) {
+        alert("Veuillez entrer un nom d'utilisateur !");
+        return;
+      }
+
+      if (!users[username]) {
+        alert("Ce nom d'utilisateur n'existe pas !");
+        return;
+      }
+
+      // Générer un mot de passe temporaire (simple ici pour la démo)
+      let tempPassword = Math.random().toString(36).slice(-8); // Mot de passe aléatoire de 8 caractères
+      users[username] = tempPassword;
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert(`Votre mot de passe temporaire est : ${tempPassword}\nConnectez-vous avec ce mot de passe, puis changez-le.`);
+      toggleResetForm();
+    }
+
     function redirectUser() {
       let query = document.getElementById('search').value.trim().toLowerCase();
       const redirections = {
@@ -252,7 +421,6 @@
     }
 
     function clearHistory() {
-      // À implémenter si besoin
       alert("Historique supprimé !");
     }
   </script>
