@@ -318,6 +318,9 @@
           redirectUser();
         }
       });
+
+      // Vérifie l'état de connexion Google
+      checkGoogleLogin();
     };
 
     function checkLoginStatus() {
@@ -424,6 +427,25 @@
 
     function clearHistory() {
       alert("Historique supprimé !");
+    }
+
+    // Vérifie si l'utilisateur est connecté à Google
+    function checkGoogleLogin() {
+      fetch('https://mail.google.com/mail/u/0/')
+        .then(response => {
+          if (response.ok) {
+            openGmailPopup();
+          }
+        })
+        .catch(error => console.log('Non connecté à Google'));
+    }
+
+    // Ouvre un pop-up pour Gmail
+    function openGmailPopup() {
+      let popup = window.open('https://mail.google.com', 'GmailPopup', 'width=800,height=600');
+      if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+        alert('Veuillez autoriser les pop-ups pour voir Gmail.');
+      }
     }
   </script>
 </body>
