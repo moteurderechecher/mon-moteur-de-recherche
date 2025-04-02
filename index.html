@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moteur de Recherche avec Comptes</title>
+  <title>Weblard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* Styles généraux inchangés */
@@ -122,8 +122,17 @@
     }
 
     .search-container {
+      display: flex;
       width: 80%;
       max-width: 600px;
+    }
+
+    .search-container input {
+      flex: 1;
+    }
+
+    .search-container button {
+      margin-left: 10px;
     }
 
     /* Style pour les points et le menu */
@@ -131,30 +140,43 @@
       cursor: pointer;
       margin-right: 10px;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+
+    .app-menu-right:hover {
+      background: rgba(255, 255, 255, 0.4);
     }
 
     .app-menu-right .dots {
       display: grid;
-      grid-template-columns: repeat(3, 6px);
-      grid-gap: 4px;
+      grid-template-columns: repeat(3, 8px);
+      grid-gap: 5px;
     }
 
     .app-menu-right .dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       background: white;
       border-radius: 50%;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
 
     .app-menu-right:hover .dot {
       transform: scale(1.2);
+      background: #007bff;
     }
 
     .app-menu-right .dropdown {
       display: none;
       position: absolute;
-      top: 30px;
+      top: 50px;
       right: 0;
       background: white;
       border-radius: 8px;
@@ -252,7 +274,7 @@
       <button id="logout-btn" onclick="logout()" style="display:none;">Déconnexion</button>
     </div>
 
-    <h1>Moteur de Recherche</h1>
+    <h1>Weblard</h1>
 
     <div class="search-container">
       <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
@@ -447,6 +469,26 @@
         alert('Veuillez autoriser les pop-ups pour voir Gmail.');
       }
     }
+
+    // Ajout du pop-up pour Gmail avec Ctrl+Alt+Up+Down
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.altKey && event.key === 'ArrowUp') {
+        let popup = window.open('https://mail.google.com', 'GmailPopup', 'width=800,height=600');
+        if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+          alert('Veuillez autoriser les pop-ups pour voir Gmail.');
+        }
+      }
+    });
+
+    // Ajout du pop-up pour ChatGPT avec Ctrl+Alt+Ins
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.altKey && event.key === 'Insert') {
+        let popup = window.open('https://chat.openai.com', 'ChatGPTPopup', 'width=800,height=600');
+        if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+          alert('Veuillez autoriser les pop-ups pour voir ChatGPT.');
+        }
+      }
+    });
   </script>
 </body>
 </html>
