@@ -434,14 +434,20 @@
     }
 
     function redirectUser() {
-      let query = document.getElementById('search').value.trim().toLowerCase();
-      const redirections = {
+      const { shell } = require('electron'); // Ajoute ceci en haut de <script> dans index.html
+
+function redirectUser() {
+    let query = document.getElementById('search').value.trim().toLowerCase();
+    const redirections = {
         "youtube": "https://www.youtube.com",
         "google": "https://www.google.com",
         "chatgpt": "https://chat.openai.com",
         "github": "https://github.com",
         "wikipedia": "https://www.wikipedia.org"
-      };
+    };
+    let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    shell.openExternal(url); // Ouvre dans le navigateur par défaut
+}
 
       let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       window.location.href = url;
