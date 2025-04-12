@@ -6,7 +6,6 @@
   <title>Flox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* Styles généraux inchangés */
     html, body {
       height: 100%;
       width: 100%;
@@ -135,7 +134,6 @@
       margin-left: 10px;
     }
 
-    /* Style pour les points et le menu */
     .app-menu-right {
       cursor: pointer;
       margin-right: 10px;
@@ -228,34 +226,13 @@
       width: 20px;
       text-align: center;
     }
-
-    /* Style pour le lien "Mot de passe oublié ?" */
-    .forgot-password {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
-      color: #007bff;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .dark-mode .forgot-password {
-      color: #66b0ff;
-    }
   </style>
 </head>
 <body>
-  <!-- Contenu principal centré -->
   <div class="main-content">
     <div class="account-section">
       <div class="app-menu-right" id="appMenu">
         <div class="dots">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
           <span class="dot"></span>
           <span class="dot"></span>
           <span class="dot"></span>
@@ -264,7 +241,6 @@
           <a href="https://www.google.com"><i class="fas fa-search"></i> Google</a>
           <a href="https://www.youtube.com"><i class="fab fa-youtube"></i> YouTube</a>
           <a href="https://www.github.com"><i class="fab fa-github"></i> GitHub</a>
-          <!-- Ajout de Gmail -->
           <a href="https://mail.google.com"><i class="fab fa-google"></i> Gmail</a>
         </div>
       </div>
@@ -279,7 +255,6 @@
     <div class="search-container">
       <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
       <button onclick="redirectUser()">🔍</button>
-      <ul id="suggestions"></ul>
     </div>
 
     <div class="buttons">
@@ -310,7 +285,6 @@
   </div>
 
   <script>
-    // Gestion du menu déroulant
     const appMenu = document.getElementById('appMenu');
     const appDropdown = document.getElementById('appDropdown');
 
@@ -340,18 +314,7 @@
           redirectUser();
         }
       });
-
-      // Vérifie l'état de connexion Google
-      checkGoogleLogin();
     };
-
-    function checkLoginStatus() {
-      let user = localStorage.getItem('currentUser');
-      if (user) {
-        document.getElementById('user-info').textContent = user;
-        document.getElementById('logout-btn').style.display = 'inline-block';
-      }
-    }
 
     function toggleAuthForm() {
       const form = document.getElementById('auth-form');
@@ -363,7 +326,7 @@
       const authForm = document.getElementById('auth-form');
       resetForm.style.display = resetForm.style.display === 'block' ? 'none' : 'block';
       if (resetForm.style.display === 'block') {
-        authForm.style.display = 'none'; // Ferme le formulaire de connexion si réinitialisation ouverte
+        authForm.style.display = 'none';
       }
     }
 
@@ -424,8 +387,7 @@
         return;
       }
 
-      // Générer un mot de passe temporaire (simple ici pour la démo)
-      let tempPassword = Math.random().toString(36).slice(-8); // Mot de passe aléatoire de 8 caractères
+      let tempPassword = Math.random().toString(36).slice(-8);
       users[username] = tempPassword;
       localStorage.setItem('users', JSON.stringify(users));
 
@@ -434,67 +396,29 @@
     }
 
     function redirectUser() {
-      const { shell } = require('electron'); // Ajoute ceci en haut de <script> dans index.html
-
-function redirectUser() {
-    let query = document.getElementById('search').value.trim().toLowerCase();
-    const redirections = {
+      let query = document.getElementById('search').value.trim().toLowerCase();
+      const redirections = {
         "youtube": "https://www.youtube.com",
         "google": "https://www.google.com",
         "chatgpt": "https://chat.openai.com",
         "github": "https://github.com",
         "wikipedia": "https://www.wikipedia.org"
-    };
-    let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-    shell.openExternal(url); // Ouvre dans le navigateur par défaut
-}
-
+      };
       let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      window.location.href = url;
+      window.open(url, "_blank");
     }
 
     function clearHistory() {
       alert("Historique supprimé !");
     }
 
-    // Vérifie si l'utilisateur est connecté à Google
-    function checkGoogleLogin() {
-      fetch('https://mail.google.com/mail/u/0/')
-        .then(response => {
-          if (response.ok) {
-            openGmailPopup();
-          }
-        })
-        .catch(error => console.log('Non connecté à Google'));
-    }
-
-    // Ouvre un pop-up pour Gmail
-    function openGmailPopup() {
-      let popup = window.open('https://mail.google.com', 'GmailPopup', 'width=800,height=600');
-      if (!popup || popup.closed || typeof popup.closed == 'undefined') {
-        alert('Veuillez autoriser les pop-ups pour voir Gmail.');
+    function checkLoginStatus() {
+      let user = localStorage.getItem('currentUser');
+      if (user) {
+        document.getElementById('user-info').textContent = user;
+        document.getElementById('logout-btn').style.display = 'inline-block';
       }
     }
-
-    // Ajout du pop-up pour Gmail avec Ctrl+Alt+Up+Down
-    document.addEventListener('keydown', function(event) {
-      if (event.ctrlKey && event.altKey && event.key === 'ArrowUp') {
-        let popup = window.open('https://mail.google.com', 'GmailPopup', 'width=800,height=600');
-        if (!popup || popup.closed || typeof popup.closed == 'undefined') {
-          alert('Veuillez autoriser les pop-ups pour voir Gmail.');
-        }
-      }
-    });
-
-    // Ajout du pop-up pour ChatGPT avec Ctrl+Alt+Ins
-    document.addEventListener('keydown', function(event) {
-      if (event.ctrlKey && event.altKey && event.key === 'Insert') {
-        let popup = window.open('https://chat.openai.com', 'ChatGPTPopup', 'width=800,height=600');
-        if (!popup || popup.closed || typeof popup.closed == 'undefined') {
-          alert('Veuillez autoriser les pop-ups pour voir ChatGPT.');
-        }
-      }
-    });
   </script>
 </body>
 </html>
