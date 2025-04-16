@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flox</title>
+  <title>Mon Application Flox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     html, body {
@@ -17,7 +17,7 @@
       font-family: 'Arial', sans-serif;
       background: linear-gradient(135deg, #667eea, #764ba2);
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       transition: background-color 0.3s, color 0.3s;
@@ -26,6 +26,31 @@
     .dark-mode {
       background: linear-gradient(135deg, #121212, #1a1a1a);
       color: #ffffff;
+    }
+
+    .custom-titlebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background: #444;
+      color: white;
+      padding: 10px 20px;
+      box-sizing: border-box;
+    }
+
+    .custom-titlebar span {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .custom-titlebar button {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
     }
 
     h1 {
@@ -229,6 +254,11 @@
   </style>
 </head>
 <body>
+  <div class="custom-titlebar">
+    <span>Flox</span>
+    <button onclick="window.close()">X</button>
+  </div>
+
   <div class="main-content">
     <div class="account-section">
       <div class="app-menu-right" id="appMenu">
@@ -250,7 +280,7 @@
       <button id="logout-btn" onclick="logout()" style="display:none;">Déconnexion</button>
     </div>
 
-    <h1>FLox</h1>
+    <h1>Flox</h1>
 
     <div class="search-container">
       <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
@@ -263,25 +293,6 @@
     </div>
 
     <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
-  </div>
-
-  <!-- Formulaire d'authentification -->
-  <div class="auth-container" id="auth-form">
-    <h2>Connexion / Inscription</h2>
-    <input type="text" id="username" placeholder="Nom d'utilisateur">
-    <input type="password" id="password" placeholder="Mot de passe">
-    <button onclick="login()">Se connecter</button>
-    <button onclick="register()">S'inscrire</button>
-    <button onclick="toggleAuthForm()">Fermer</button>
-    <a href="#" class="forgot-password" onclick="toggleResetForm()">Mot de passe oublié ?</a>
-  </div>
-
-  <!-- Formulaire de réinitialisation de mot de passe -->
-  <div class="reset-container" id="reset-form">
-    <h2>Réinitialiser le mot de passe</h2>
-    <input type="text" id="reset-username" placeholder="Nom d'utilisateur">
-    <button onclick="resetPassword()">Réinitialiser</button>
-    <button onclick="toggleResetForm()">Fermer</button>
   </div>
 
   <script>
