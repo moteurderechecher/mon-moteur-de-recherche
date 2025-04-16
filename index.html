@@ -6,6 +6,13 @@
   <title>Mon Application Flox</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --bg: #202124;
+      --text: #ffffff;
+      --hover: #5f6368;
+      --btn-size: 32px;
+    }
+
     html, body {
       height: 100%;
       width: 100%;
@@ -14,7 +21,7 @@
     }
 
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea, #764ba2);
       display: flex;
       flex-direction: column;
@@ -28,29 +35,51 @@
       color: #ffffff;
     }
 
-    .custom-titlebar {
+    .titlebar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: var(--bg);
+      color: var(--text);
+      height: 38px;
+      padding: 0 10px;
+      -webkit-app-region: drag;
       width: 100%;
-      background: #444;
-      color: white;
-      padding: 10px 20px;
-      box-sizing: border-box;
     }
 
-    .custom-titlebar span {
-      font-size: 1.2rem;
+    .titlebar .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .titlebar .title {
+      font-size: 14px;
       font-weight: bold;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
     }
 
-    .custom-titlebar button {
-      background: red;
-      color: white;
+    .window-controls {
+      display: flex;
+    }
+
+    .window-controls button {
+      width: var(--btn-size);
+      height: var(--btn-size);
+      background: none;
       border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
+      color: var(--text);
       cursor: pointer;
+      -webkit-app-region: no-drag;
+    }
+
+    .window-controls button:hover {
+      background: var(--hover);
+    }
+
+    .window-controls .close:hover {
+      background: #d93025;
     }
 
     h1 {
@@ -252,11 +281,35 @@
       text-align: center;
     }
   </style>
+  <script type="text/javascript">
+    function minimize() {
+      alert("Minimize action triggered!");
+    }
+
+    function maximize() {
+      alert("Maximize action triggered!");
+    }
+
+    function closeApp() {
+      alert("Close action triggered!");
+    }
+
+    function titleClicked() {
+      alert("Flox - Navigateur Léger");
+    }
+  </script>
 </head>
 <body>
-  <div class="custom-titlebar">
-    <span>Flox</span>
-    <button onclick="window.close()">X</button>
+  <div class="titlebar">
+    <div class="left">
+      <img src="favicon.ico" height="20" />
+      <div class="title" onclick="titleClicked()">Flox</div>
+    </div>
+    <div class="window-controls">
+      <button onclick="minimize()">&#x2013;</button>
+      <button onclick="maximize()">&#9723;</button>
+      <button class="close" onclick="closeApp()">&#10005;</button>
+    </div>
   </div>
 
   <div class="main-content">
@@ -294,142 +347,5 @@
 
     <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
   </div>
-
-  <script>
-    const appMenu = document.getElementById('appMenu');
-    const appDropdown = document.getElementById('appDropdown');
-
-    appMenu.addEventListener('click', function() {
-      appDropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', function(event) {
-      if (!appMenu.contains(event.target)) {
-        appDropdown.classList.remove('show');
-      }
-    });
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
-
-    window.onload = function() {
-      if (JSON.parse(localStorage.getItem('darkMode'))) {
-        document.body.classList.add('dark-mode');
-      }
-      checkLoginStatus();
-
-      document.getElementById('search').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-          redirectUser();
-        }
-      });
-    };
-
-    function toggleAuthForm() {
-      const form = document.getElementById('auth-form');
-      form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function toggleResetForm() {
-      const resetForm = document.getElementById('reset-form');
-      const authForm = document.getElementById('auth-form');
-      resetForm.style.display = resetForm.style.display === 'block' ? 'none' : 'block';
-      if (resetForm.style.display === 'block') {
-        authForm.style.display = 'none';
-      }
-    }
-
-    function register() {
-      let username = document.getElementById('username').value.trim();
-      let password = document.getElementById('password').value.trim();
-
-      if (!username || !password) {
-        alert("Remplissez tous les champs !");
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-      if (users[username]) {
-        alert("Nom d'utilisateur déjà pris !");
-        return;
-      }
-
-      users[username] = password;
-      localStorage.setItem('users', JSON.stringify(users));
-      alert("Compte créé avec succès !");
-      toggleAuthForm();
-    }
-
-    function login() {
-      let username = document.getElementById('username').value.trim();
-      let password = document.getElementById('password').value.trim();
-
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-
-      if (users[username] === password) {
-        localStorage.setItem('currentUser', username);
-        document.getElementById('user-info').textContent = username;
-        document.getElementById('logout-btn').style.display = 'inline-block';
-        toggleAuthForm();
-      } else {
-        alert("Nom d'utilisateur ou mot de passe incorrect !");
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('currentUser');
-      document.getElementById('user-info').textContent = "Invité";
-      document.getElementById('logout-btn').style.display = 'none';
-    }
-
-    function resetPassword() {
-      let username = document.getElementById('reset-username').value.trim();
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-
-      if (!username) {
-        alert("Veuillez entrer un nom d'utilisateur !");
-        return;
-      }
-
-      if (!users[username]) {
-        alert("Ce nom d'utilisateur n'existe pas !");
-        return;
-      }
-
-      let tempPassword = Math.random().toString(36).slice(-8);
-      users[username] = tempPassword;
-      localStorage.setItem('users', JSON.stringify(users));
-
-      alert(`Votre mot de passe temporaire est : ${tempPassword}\nConnectez-vous avec ce mot de passe, puis changez-le.`);
-      toggleResetForm();
-    }
-
-    function redirectUser() {
-      let query = document.getElementById('search').value.trim().toLowerCase();
-      const redirections = {
-        "youtube": "https://www.youtube.com",
-        "google": "https://www.google.com",
-        "chatgpt": "https://chat.openai.com",
-        "github": "https://github.com",
-        "wikipedia": "https://www.wikipedia.org"
-      };
-      let url = redirections[query] || `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-      window.open(url, "_blank");
-    }
-
-    function clearHistory() {
-      alert("Historique supprimé !");
-    }
-
-    function checkLoginStatus() {
-      let user = localStorage.getItem('currentUser');
-      if (user) {
-        document.getElementById('user-info').textContent = user;
-        document.getElementById('logout-btn').style.display = 'inline-block';
-      }
-    }
-  </script>
 </body>
 </html>
