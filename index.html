@@ -28,31 +28,6 @@
       color: #ffffff;
     }
 
-    .custom-titlebar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      background: #444;
-      color: white;
-      padding: 10px 20px;
-      box-sizing: border-box;
-    }
-
-    .custom-titlebar span {
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-
-    .custom-titlebar button {
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-
     h1 {
       font-size: 2rem;
       margin-bottom: 20px;
@@ -254,11 +229,6 @@
   </style>
 </head>
 <body>
-  <div class="custom-titlebar">
-    <span>Flox</span>
-    <button onclick="window.close()">X</button>
-  </div>
-
   <div class="main-content">
     <div class="account-section">
       <div class="app-menu-right" id="appMenu">
@@ -293,6 +263,25 @@
     </div>
 
     <footer>© 2025 Moteur de Recherche. Tous droits réservés.</footer>
+  </div>
+
+  <!-- Formulaire d'authentification -->
+  <div class="auth-container" id="auth-form">
+    <h2>Connexion / Inscription</h2>
+    <input type="text" id="username" placeholder="Nom d'utilisateur">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button onclick="login()">Se connecter</button>
+    <button onclick="register()">S'inscrire</button>
+    <button onclick="toggleAuthForm()">Fermer</button>
+    <a href="#" class="forgot-password" onclick="toggleResetForm()">Mot de passe oublié ?</a>
+  </div>
+
+  <!-- Formulaire de réinitialisation de mot de passe -->
+  <div class="reset-container" id="reset-form">
+    <h2>Réinitialiser le mot de passe</h2>
+    <input type="text" id="reset-username" placeholder="Nom d'utilisateur">
+    <button onclick="resetPassword()">Réinitialiser</button>
+    <button onclick="toggleResetForm()">Fermer</button>
   </div>
 
   <script>
