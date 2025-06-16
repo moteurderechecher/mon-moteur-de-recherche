@@ -2,6 +2,17 @@
 
 <html lang="fr">
 <head>
+<style>
+webview {
+  display: flex !important;
+  flex: 1;
+  width: 100vw;
+  height: calc(100vh - 36px); /* Adapter selon la hauteur de la barre de lien */
+  border: none;
+  overflow: auto;
+}
+</style>
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Mon Application Flox</title>
@@ -3095,5 +3106,21 @@ window.addEventListener('DOMContentLoaded', () => {
   }, { passive: false });
 });
 </script>
+
+<script>
+function resizeAllWebviews() {
+  const offset = document.getElementById('customLinkBar')?.offsetHeight || 36;
+  const height = window.innerHeight - offset;
+
+  document.querySelectorAll('webview').forEach(wv => {
+    wv.style.height = height + 'px';
+    wv.style.width = '100vw';
+  });
+}
+
+window.addEventListener('resize', resizeAllWebviews);
+window.addEventListener('DOMContentLoaded', resizeAllWebviews);
+</script>
+
 </body>
 </html>
